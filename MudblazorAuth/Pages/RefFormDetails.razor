@@ -1,0 +1,492 @@
+﻿@page "/refdetails/{currentPerson:int}"
+
+@using MudblazorAuth.Data
+@using DataAccess
+@using MudblazorAuth.Models
+@inject IMySQLDataAccess _data
+@inject IConfiguration _config
+@inject NavigationManager UriHelper
+
+<h3>Referral Form Details</h3>
+
+
+<div class="container">
+
+    <section id="avail-appt-section">
+
+        @foreach (var a in referral)
+        {
+            <div class="form-display">
+                <div class="row">
+                    <div class="col-3">
+                       <p>Name</p> 
+                    </div>
+                    <div class="col-8">
+                        @a.RefName
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Date of birth</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefDob.ToShortDateString()
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Address 1</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefAddress1
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Address 2</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefAddress2
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Address 3</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefAddress3
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Address 4</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefAddress4
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Contact 1</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefContact1
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Contact 2</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefContact2
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>PPS Number</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefPPS
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Name of Referrer</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefNameReferring
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Name of Referring Agency</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefNameReferrer
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto-3">
+                        <p>Background Information on Young Person</p>
+                    </div>
+                    <div class="col-11" >
+                        <textarea id="w3review" name="w3review" rows="4" class="col-11">
+                        @a.RefBackground
+                        </textarea>
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Medical Issues</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefMedical
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <p>Next of Kin</p>
+                    </div>
+                    <div class="col-8">
+                        @a.RefKin
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                       <p>Date of Referral</p>
+                    </div>
+                    <div class="col-8">
+                        @a.DateReferral.ToShortDateString()
+                    </div>
+                    <div class="col-1">
+                        Edit
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="editAppt" @onclick="() => EditReferral(a.Id)">Edit Form</button>
+        }
+
+    </section>
+
+    <section id="edit-appt" class="mt-5">
+
+        @if (editStatus)
+
+        {
+            <h3>Edit Existing Available Appointment</h3>
+
+            <EditForm Model="@newReferral" OnValidSubmit="@UpdateReferral">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="form-group">
+                    <label for="inputName">Name</label>
+                    <input type="text" class="form-control" id="inputName" placeholder="" @bind-value="addReferral.RefName">
+                </div>
+
+                <div class="mb-3">
+                    <label for="date" class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control" id="date" @bind-value="addReferral.RefDob">
+                </div>
+
+
+                <div class="form-group">
+                    <label for="inputAddress">Address</label>
+                    <input type="text" class="form-control" id="inputAddress" placeholder="" @bind-value="addReferral.RefAddress1">
+                </div>
+
+
+                <div class="form-group">
+                    <label for="inputAddress2">Address 2</label>
+                    <input type="text" class="form-control" id="inputAddress2" placeholder="" @bind-value="addReferral.RefAddress2">
+                </div>
+
+
+                <div class="form-group">
+                    <label for="inputAddress3">Address 3</label>
+                    <input type="text" class="form-control" id="inputAddress3" placeholder="" @bind-value="addReferral.RefAddress3">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputAddress4">Address 4</label>
+                    <input type="text" class="form-control" id="inputAddress4" placeholder="" @bind-value="addReferral.RefAddress4">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputContactNumber">Contact Number</label>
+                    <input type="text" class="form-control" id="inputContactNumber" placeholder="" @bind-value="addReferral.RefContact1">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputContactNumber">Contact Number</label>
+                    <input type="text" class="form-control" id="inputContactNumber" placeholder="" @bind-value="addReferral.RefContact2">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPPS">PPS Number</label>
+                    <input type="text" class="form-control" id="inputPPS" placeholder="" @bind-value="addReferral.RefPPS">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputNameReferrer">Name Referrer</label>
+                    <input type="text" class="form-control" id="inputNameReferrer" placeholder="" @bind-value="addReferral.RefNameReferring">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputAgency">Name of Referring Agency</label>
+                    <input type="text" class="form-control" id="inputAgency" placeholder="" @bind-value="addReferral.RefNameReferrer">
+                </div>
+
+                <div class="form-group col-md-6 mb-sm-5">
+
+                    <label for="backgroundInformationTextarea">Background Information on Young Person</label>
+
+                    <textarea type="text" class="form-control" id="backgroundInformationTextarea"
+                          rows="3" placeholder="i.e. literacy, mental health, addiction, offending
+
+                  behaviour, safety issues" @onchange="@((args) => addReferral.RefBackground = args.Value.ToString())"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputMedicalIssues">Medical Issues</label>
+                    <input type="text" class="form-control" id="inputAddress2" placeholder="" @bind-value="addReferral.RefMedical">
+                </div>
+
+                <div class="form-group">
+                    <label for="inputAddress4">Next of Kin</label>
+                    <input type="text" class="form-control" id="inputMedicalIssues" placeholder="" @bind-value="addReferral.RefKin">
+                </div>
+
+                <div class="mb-3">
+                    <label for="date" class="form-label">Date of Referral</label>
+                    <input type="date" class="form-control" id="date" @bind-value="addReferral.DateReferral">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save</button>
+
+            </EditForm>
+        }
+    </section>
+
+</div>
+
+
+@code {
+
+    [Parameter]
+    public int currentPerson { get; set; }
+
+
+    void Navigate()
+    {
+        UriHelper.NavigateTo("refedit");
+    }
+
+
+    List<ReferralFormModel>? referral;
+    List<ReferralFormModel>? thisReferral;
+
+    private ReferralFormModel newReferral = new ReferralFormModel();
+
+    // booleans to determine what to display in the UI
+
+    bool createStatus = true;
+    bool editStatus = false;
+    bool deleteErrorMessage = false;
+
+    // error message for db delete exception
+
+    string dbErrorMessage = "";
+
+    // variable to keep track of the current appt being edited
+
+    int refBeingEdited;
+
+    public class AddReferral
+
+    {
+
+        public string? RefName { get; set; }
+
+        public DateTime RefDob { get; set; }
+
+        public string? RefAddress1 { get; set; }
+
+        public string? RefAddress2 { get; set; }
+
+        public string? RefAddress3 { get; set; }
+
+        public string? RefAddress4 { get; set; }
+
+        public string? RefContact1 { get; set; }
+
+        public string? RefContact2 { get; set; }
+
+        public string? RefPPS { get; set; }
+
+        public string? RefNameReferring { get; set; }
+
+        public string? RefNameReferrer { get; set; }
+
+        public string? RefBackground { get; set; }
+
+        public string? RefMedical { get; set; }
+
+        public string? RefKin { get; set; }
+
+        public DateTime DateReferral { get; set; }
+
+    }
+
+    private AddReferral addReferral = new AddReferral();
+
+
+
+    // Load the initial data
+
+
+    protected override async Task OnInitializedAsync()
+
+    {
+        string sql = "SELECT * FROM referral WHERE ID = " + currentPerson;
+        referral = await _data.LoadData<ReferralFormModel, dynamic>(sql, new { }, _config.GetConnectionString("MySQLConnection"));
+
+    }
+
+
+
+    // Insert Form
+
+    private async Task InsertReferral()
+
+    {
+
+        ReferralFormModel a = new ReferralFormModel
+
+            {
+
+                RefName = new string(addReferral.RefName),
+                RefDob = new DateTime(addReferral.RefDob.Year, addReferral.RefDob.Month, addReferral.RefDob.Day),
+                RefAddress1 = new string(addReferral.RefAddress1),
+                RefAddress2 = new string(addReferral.RefAddress2),
+                RefAddress3 = new string(addReferral.RefAddress3),
+                RefAddress4 = new string(addReferral.RefAddress4),
+                RefContact1 = new string(addReferral.RefContact1),
+                RefContact2 = new string(addReferral.RefContact2),
+                RefPPS = new string(addReferral.RefPPS),
+                RefNameReferring = new string(addReferral.RefNameReferring),
+                RefNameReferrer = new string(addReferral.RefNameReferrer),
+                RefBackground = new string(addReferral.RefBackground),
+                RefMedical = new string(addReferral.RefMedical),
+                RefKin = new string(addReferral.RefKin),
+                DateReferral = new DateTime(addReferral.DateReferral.Year, addReferral.DateReferral.Month, addReferral.DateReferral.Day),
+            };
+
+        string sql = "INSERT INTO referral (RefName, RefDob, RefAddress1, RefAddress2, RefAddress3, RefAddress4, " +
+                "RefContact1, RefContact2, RefPPS, RefNameReferring, RefNameReferrer, RefBackground, RefMedical, RefKin, DateReferral)" +
+                "VALUES (@RefName, @RefDob, @RefAddress1, @RefAddress2, @RefAddress3, @RefAddress4, " +
+                "@RefContact1, @RefContact2, @RefPPS, @RefNameReferring, @RefNameReferrer, @RefBackground, @RefMedical, @RefKin, @DateReferral);";
+
+        await _data.SaveData(sql, a, _config.GetConnectionString("MySqlConnection"));
+
+        await OnInitializedAsync();
+        a = new ReferralFormModel();
+        addReferral = new AddReferral();
+
+    }
+
+
+
+    //Edit Form
+
+    private async Task EditReferral(int id)
+
+    {
+        createStatus = false;
+        editStatus = true;
+
+        string sql = "SELECT * FROM referral WHERE Id = @Id";
+        thisReferral = await _data.LoadData<ReferralFormModel, dynamic>(sql, new { Id = id }, _config.GetConnectionString("MySqlConnection"));
+        refBeingEdited = id;
+
+
+        addReferral.RefName = thisReferral[0].RefName;
+        addReferral.RefDob = thisReferral[0].RefDob;
+        addReferral.RefAddress1 = thisReferral[0].RefAddress1;
+        addReferral.RefAddress2 = thisReferral[0].RefAddress2;
+        addReferral.RefAddress3 = thisReferral[0].RefAddress3;
+        addReferral.RefAddress4 = thisReferral[0].RefAddress4;
+        addReferral.RefContact1 = thisReferral[0].RefContact1;
+        addReferral.RefContact2 = thisReferral[0].RefContact2;
+        addReferral.RefPPS = thisReferral[0].RefPPS;
+        addReferral.RefNameReferring = thisReferral[0].RefNameReferring;
+        addReferral.RefNameReferrer = thisReferral[0].RefNameReferrer;
+        addReferral.RefBackground = thisReferral[0].RefBackground;
+        addReferral.RefMedical = thisReferral[0].RefMedical;
+        addReferral.RefKin = thisReferral[0].RefKin;
+        addReferral.DateReferral = thisReferral[0].DateReferral;
+    }
+
+    // Update Form
+
+    private async Task UpdateReferral()
+
+    {
+        ReferralFormModel a = new ReferralFormModel
+            {
+
+                RefName = new string(addReferral.RefName),
+                RefDob = new DateTime(addReferral.RefDob.Year, addReferral.RefDob.Month, addReferral.RefDob.Day),
+                RefAddress1 = new string(addReferral.RefAddress1),
+                RefAddress2 = new string(addReferral.RefAddress2),
+                RefAddress3 = new string(addReferral.RefAddress3),
+                RefAddress4 = new string(addReferral.RefAddress4),
+                RefContact1 = new string(addReferral.RefContact1),
+                RefContact2 = new string(addReferral.RefContact2),
+                RefPPS = new string(addReferral.RefPPS),
+                RefNameReferring = new string(addReferral.RefNameReferring),
+                RefNameReferrer = new string(addReferral.RefNameReferrer),
+                RefBackground = new string(addReferral.RefBackground),
+                RefMedical = new string(addReferral.RefMedical),
+                RefKin = new string(addReferral.RefKin),
+                DateReferral = new DateTime(addReferral.DateReferral.Year, addReferral.DateReferral.Month, addReferral.DateReferral.Day),
+                Id = refBeingEdited
+            };
+
+
+        string sql = "UPDATE referral SET RefName = @RefName, RefDob = @RefDob, RefAddress1 = @RefAddress1, RefAddress2 = @RefAddress2, RefAddress3 = @RefAddress3," +
+                " RefAddress4 = @RefAddress4, " +
+        "RefContact1 = @RefContact1, RefContact2 = @RefContact2, RefPPS = @RefPPS, RefNameReferring = @RefNameReferring, RefNameReferrer = @RefNameReferrer, " +
+        "RefBackground = @RefBackground, RefMedical = @RefMedical, RefKin = @RefKin, DateReferral = @DateReferral  WHERE Id = @Id;";
+        await _data.SaveData(sql, a, _config.GetConnectionString("MySqlConnection"));
+
+        await OnInitializedAsync();
+        createStatus = true;
+        editStatus = false;
+
+    }
+
+}

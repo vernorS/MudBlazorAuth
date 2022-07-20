@@ -1,0 +1,66 @@
+﻿@page "/listreform"
+
+@using MudblazorAuth.Data
+@using DataAccess
+@using MudblazorAuth.Models
+@inject IMySQLDataAccess _data
+@inject IConfiguration _config
+@inject NavigationManager UriHelper
+
+<div class="container">
+    <section id="avail-appt-section">
+
+        <h3>Referral Form</h3>
+        @if (referral == null)
+        {
+            <p><em>Loading ...</em></p>
+        }
+
+        else
+        {
+            @foreach (var a in referral)
+            {
+                <p>
+                    <a href="@($"/refdetails/{@a.Id}")">@a.RefName</a>
+                </p>
+            }
+        }
+
+    </section>
+</div>
+
+
+@code {
+    void Navigate()
+    {
+        UriHelper.NavigateTo("samples");
+    }
+
+    List<ReferralFormModel>? referral;
+    List<ReferralFormModel>? thisReferral;
+
+    private ReferralFormModel newReferral = new ReferralFormModel();
+
+    // booleans to determine what to display in the UI
+
+    bool createStatus = true;
+    bool editStatus = false;
+    bool deleteErrorMessage = false;
+
+    // error message for db delete exception
+
+    string dbErrorMessage = "";
+
+    // variable to keep track of the current appt being edited
+
+    int refBeingEdited;
+
+    // Load the data
+
+    protected override async Task OnInitializedAsync()
+
+    {
+        string sql = "SELECT * FROM referral";
+        referral = await _data.LoadData<ReferralFormModel, dynamic>(sql, new { }, _config.GetConnectionString("MySQLConnection"));
+    }
+}
