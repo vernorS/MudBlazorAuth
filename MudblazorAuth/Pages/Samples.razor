@@ -4,102 +4,63 @@
 @using MudblazorAuth.Models
 @inject IMySQLDataAccess _data
 @inject IConfiguration _config
+@attribute [Authorize]
 
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Samples</PageTitle>
 
-<h1>Counter</h1>
+<h1>Samples</h1>
 
 
 <form>
+    <h3>Add New Sample</h3>
+    <EditForm Model="@newSample" OnValidSubmit="@OnValidSubmit">
+        <DataAnnotationsValidator />
 
+        <MudGrid>
+            <MudItem xs="12" sm="12">
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Label="Single Line" HelperText="Max. x characters" @bind-Value="newSample.OneLineText" For="@(() => newSample.OneLineText)" />
+                        
+                        <MudTextField T="string" Label="Multiple Lines Text" Variant="Variant.Text" Lines="5" @bind-Value="newSample.MultipleLinesText"/>
 
-        <h3>Add New Sample</h3>
-        <EditForm Model="@newSample" OnValidSubmit="@InsertSample">
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+                        <MudSelect T="string" Label="DropList" AnchorOrigin="Origin.BottomCenter" @bind-Value="newSample.DropList">
+                            <MudSelectItem  Value="@("One")" />
+                            <MudSelectItem  Value="@("Two")" />
+                            <MudSelectItem  Value="@("Three")" />
+                        </MudSelect>
+                       
+                        <MudCheckBox Label="Agree" @bind-value="@newSample.Checkbox" For="@(() => @newSample.Checkbox)"></MudCheckBox>
+                        
+                        <MudForm>
+                            <MudRadioGroup T="string" Label="Radio" @bind-SelectedOption="newSample.Radio">
+                                <MudRadio Option="@("Radio 1")">One</MudRadio>
+                                <MudRadio Option="@("Radio 2")">Two</MudRadio>
+                                <MudRadio Option="@("Radio 3")">Three</MudRadio>
+                                <MudRadio Option="@("Radio 4")">Four</MudRadio>
+                            </MudRadioGroup>
+                        </MudForm>
 
-            <div class="form-row">
-                <div class="col-md-12 mb-3">
-                    <label for="validationDefault01">First name</label>
-                    <input type="text" class="form-control" id="validationDefault01" placeholder="First name" required @bind-value="addSample.FirstName">
-                </div>
-
-
-                <div class="mb-3">
-                    <label for="validationDefault05">Zip</label>
-                    <input type="text" class="form-control" id="validationDefault05" placeholder="Zip" required @bind-value="addSample.Zip">
-                </div>
-
-
-                <div class="form-group col-md-6 mb-sm-5">
-                    <label for="exampleFormControlTextarea1">Example textarea</label>
-                    <textarea type="text" class="form-control" id="exampleFormControlTextarea1" rows="3" @onchange="@((args) => addSample.Txt = args.Value.ToString())"></textarea>
-                </div>
-
-
-                <button class="btn btn-primary" type="submit">Submit form</button>
-            </div>
-
-        </EditForm>
-
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Submit</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
 </form>
-
-
 
 
 @code {
 
-    List<SamplesModel>? samples;
-    List<SamplesModel>? thisSample;
-
     private SamplesModel newSample = new SamplesModel();
 
-
-    // booleans to determine what to display in the UI
-    bool createStatus = true;
-    bool editStatus = false;
-    bool deleteErrorMessage = false;
-
-    // error message for db delete exception
-    string dbErrorMessage = "";
-
-    // variable to keep track of the current appt being edited
-    int apptBeingEdited;
-
-
-    public class AddSample
+    private async Task OnValidSubmit()
     {
-        public string? FirstName { get; set; }
-        public string? Zip { get; set; }
-        public string? Txt { get; set; }
-    }
-
-    private AddSample addSample = new AddSample();
-
-    // Load the initial data
-    protected override async Task OnInitializedAsync()
-    {
-        string sql = "SELECT * FROM samples";
-        samples = await _data.LoadData<SamplesModel, dynamic>(sql, new { }, _config.GetConnectionString("MySQLConnection"));
-    }
-
-    // Insert Appointments
-    private async Task InsertSample()
-    {
-        SamplesModel a = new SamplesModel
-        {
-
-            FirstName = new string(addSample.FirstName),
-            Zip = new string(addSample.Zip),
-            Txt = new string(addSample.Txt)
-
-        };
-
-        string sql = "INSERT INTO samples (FirstName, Zip, Txt) VALUES (@FirstName, @Zip, @Txt);";
-        await _data.SaveData(sql, a, _config.GetConnectionString("MySqlConnection"));
-        await OnInitializedAsync();
-        a = new SamplesModel();
-        addSample = new AddSample();
+        string sql = "INSERT INTO samples (OneLineText, MultipleLinesText, DropList, Checkbox, Radio) VALUES (@oneLineText, @multipleLinesText, @dropList, @checkbox, @radio);";
+        await _data.SaveData(sql, newSample, _config.GetConnectionString("MySqlConnection"));
+        newSample = new SamplesModel();
     }
 }
