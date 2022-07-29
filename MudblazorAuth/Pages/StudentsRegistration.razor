@@ -41,7 +41,7 @@
                     <MudCheckBox Label="Registred With Ballymun Job Centre" @bind-CheValuecked="@newStudent.studentModel.RegistredWithBLJC" For="@(() => newStudent.studentModel.RegistredWithBLJC)"></MudCheckBox>
                     <MudCheckBox Label="Guidance Officer" @bind-Value="@newStudent.studentModel.GuidanceOfficer" For="@(() => newStudent.studentModel.GuidanceOfficer)"></MudCheckBox>
                     <MudCheckBox Label="Engaged With Other Agencies" @bind-Value="@newStudent.studentModel.EngagedWithOtherAgencies" For="@(() => newStudent.studentModel.EngagedWithOtherAgencies)"></MudCheckBox>
-                    <MudCheckBox Label="Responsabilities" @bind-Value="@newStudent.studentModel.Responsabilities" For="@(() => newStudent.studentModel.Responsabilities)"></MudCheckBox>
+                    <MudCheckBox Label="Responsibilities" @bind-Value="@newStudent.studentModel.Responsibilities" For="@(() => newStudent.studentModel.Responsibilities)"></MudCheckBox>
                     <MudCheckBox Label="Photo Consent" @bind-Value="@newStudent.studentModel.PhotoConsent" For="@(() => newStudent.studentModel.PhotoConsent)"></MudCheckBox>
                     <MudCheckBox Label="Data Consent" @bind-Value="@newStudent.studentModel.DataConsent" For="@(() => newStudent.studentModel.DataConsent)"></MudCheckBox>
                     <MudCheckBox Label="Personal Property Consent" @bind-Value="@newStudent.studentModel.PersonalPropertyConsent" For="@(() => newStudent.studentModel.PersonalPropertyConsent)"></MudCheckBox>
@@ -80,12 +80,12 @@
         Console.WriteLine(personalDetailsId);
         newStudent.studentModel.DetailsId = personalDetailsId;
 
-        string sqlInsertStudent = "INSERT INTO student (DetailsId, EducationLevel, ReferralSource, Interview, PlaceOffered," +
-               "PlaceAccepted, RegistredWithBLJC, GuidanceOfficer, EngagedWithOtherAgencies, Responsabilities," +
+        string sqlInsertStudent = "INSERT INTO students (DetailsId, EducationLevel, ReferralSource, Interview, PlaceOffered," +
+               "PlaceAccepted, RegistredWithBLJC, GuidanceOfficer, EngagedWithOtherAgencies, Responsibilities," +
                "PhotoConsent, DataConsent, PersonalPropertyConsent, StudFiciResn, Notes)" +
 
                "VALUES (@DetailsId, @EducationLevel, @ReferralSource,@Interview, @PlaceOffered,@PlaceAccepted," +
-               "@RegistredWithBLJC,@GuidanceOfficer, @EngagedWithOtherAgencies,@Responsabilities, @PhotoConsent," +
+               "@RegistredWithBLJC,@GuidanceOfficer, @EngagedWithOtherAgencies,@Responsibilities, @PhotoConsent," +
                "@DataConsent,@PersonalPropertyConsent, @StudFiciResn,@Notes);";
 
         await _data.SaveData(sqlInsertStudent, newStudent.studentModel, _config.GetConnectionString("MySqlConnection"));

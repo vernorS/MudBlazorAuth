@@ -12,7 +12,7 @@
         public bool RegistredWithBLJC { get; set; }
         public bool GuidanceOfficer { get; set; }
         public bool EngagedWithOtherAgencies { get; set; }
-        public bool Responsabilities { get; set; }
+        public bool Responsibilities { get; set; }
         public bool PhotoConsent { get; set; }
         public bool DataConsent { get; set; }
         public bool PersonalPropertyConsent { get; set; }
