@@ -3,11 +3,12 @@
     public class SamplesModel
     {
         public int Id { get; set; }
-        public string? OneLineText { get; set; }
-        public string? MultipleLinesText { get; set; }
-        public string? DropList { get; set; }
-        public bool? Checkbox { get; set; }
-        public string? Radio { get; set; } 
+        public string? oneLineText { get; set; }
+        public string? multipleLinesText { get; set; }
+        public DateTime DoB { get; set; }
+        public string? dropList { get; set; }
+        public bool checkbox { get; set; }
+        public string? radio { get; set; }
 
     }
 }

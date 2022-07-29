@@ -1,0 +1,57 @@
+﻿@page "/listStudent"
+
+@using MudblazorAuth.Data
+@using DataAccess
+@using MudblazorAuth.Models
+@inject IMySQLDataAccess _data
+@inject IConfiguration _config
+@inject NavigationManager UriHelper
+
+
+<div>
+    <MudText Typo="Typo.h3">Student List</MudText>
+
+        <input type="text" id="searchBox" name="searchBox"  @onchange="ShowNameSearched"/>
+
+    @if (student == null)
+    {
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    }else
+    {
+        @foreach (var a in student){
+            <MudText Typo="Typo.body1"><a href="@($"/refdetails/{@a.DetailsId}")">@a.FirstName</a></MudText>
+        }
+    }
+</div>
+
+@code {
+
+    List<PersonalDetailsModel>? student;
+
+    object nameValue;
+
+    // Load the data
+        protected override async Task OnInitializedAsync()
+
+    {
+        string sql = "SELECT * FROM personal_details";
+        student = await _data.LoadData<PersonalDetailsModel, dynamic>(sql, new { }, _config.GetConnectionString("MySQLConnection"));
+    }
+
+
+        private async Task ShowNameSearched(ChangeEventArgs args)
+    {
+        nameValue = args.Value;
+        string astr = nameValue.ToString();
+        string[] arr = astr.Split(' ');
+        if (arr.Count() > 1){
+            string sql = "SELECT * FROM personal_details WHERE FirstName = @FirstName;";
+            student = await _data.LoadData<PersonalDetailsModel, dynamic>(sql, new { FirstName = astr }, _config.GetConnectionString("MySQLConnection"));
+        }
+        else{
+            string sql = "SELECT * FROM personal_details WHERE FirstName = @FirstName;";
+            student = await _data.LoadData<PersonalDetailsModel, dynamic>(sql, new { FirstName = @nameValue }, _config.GetConnectionString("MySQLConnection"));
+        }
+        student = student.OrderBy(x => x.DetailsId).ToList();
+    }
+}

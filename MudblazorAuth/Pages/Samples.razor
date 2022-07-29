@@ -7,59 +7,48 @@
 @attribute [Authorize]
 
 
-<PageTitle>Samples</PageTitle>
+<EditForm Model="@newSample" OnValidSubmit="@InsertSample">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="PPS Number" HelperText="Max 8 hcaracters" @bind-Value="newSample.oneLineText" For="@(() => newSample.oneLineText)" />
+                    <MudTextField Label="First Name" HelperText="Max. x characters" @bind-Value="newSample.multipleLinesText" For="@(() => newSample.multipleLinesText)" />
+@*                    <MudDatePicker Label="Date of Birth" @bind-Value="newSample.DoB"/>
+*@                    <MudSelect T="string" Label="Gender" @bind-Value="newSample.dropList" For="@(() => newSample.dropList)">
+                        <MudSelectItem Value="@("Female")" />
+                        <MudSelectItem Value="@("Male")" />
+                        <MudSelectItem Value="@("Other")" />
+                        <MudSelectItem Value="@("Refuse Answer")" />
+                    </MudSelect>
+                    <MudCheckBox Label="Data Consent" @bind-Value="@newSample.checkbox" For="@(() => newSample.checkbox)"></MudCheckBox>
+                     <MudTextField Label="First Name" HelperText="Max. x characters" @bind-Value="newSample.radio" For="@(() => newSample.radio)" />
+                </MudCardContent>
 
-<h1>Samples</h1>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Submit</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 
 
-<form>
-    <h3>Add New Sample</h3>
-    <EditForm Model="@newSample" OnValidSubmit="@OnValidSubmit">
-        <DataAnnotationsValidator />
-
-        <MudGrid>
-            <MudItem xs="12" sm="12">
-                <MudCard>
-                    <MudCardContent>
-                        <MudTextField Label="Single Line" HelperText="Max. x characters" @bind-Value="newSample.OneLineText" For="@(() => newSample.OneLineText)" />
-                        
-                        <MudTextField T="string" Label="Multiple Lines Text" Variant="Variant.Text" Lines="5" @bind-Value="newSample.MultipleLinesText"/>
-
-                        <MudSelect T="string" Label="DropList" AnchorOrigin="Origin.BottomCenter" @bind-Value="newSample.DropList">
-                            <MudSelectItem  Value="@("One")" />
-                            <MudSelectItem  Value="@("Two")" />
-                            <MudSelectItem  Value="@("Three")" />
-                        </MudSelect>
-                       
-                        <MudCheckBox Label="Agree" @bind-value="@newSample.Checkbox" For="@(() => @newSample.Checkbox)"></MudCheckBox>
-                        
-                        <MudForm>
-                            <MudRadioGroup T="string" Label="Radio" @bind-SelectedOption="newSample.Radio">
-                                <MudRadio Option="@("Radio 1")">One</MudRadio>
-                                <MudRadio Option="@("Radio 2")">Two</MudRadio>
-                                <MudRadio Option="@("Radio 3")">Three</MudRadio>
-                                <MudRadio Option="@("Radio 4")">Four</MudRadio>
-                            </MudRadioGroup>
-                        </MudForm>
-
-                    </MudCardContent>
-                    <MudCardActions>
-                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Submit</MudButton>
-                    </MudCardActions>
-                </MudCard>
-            </MudItem>
-        </MudGrid>
-    </EditForm>
-</form>
 
 
 @code {
 
+    List<SamplesModel>? samples;
+    List<SamplesModel>? thisSample;
+
     private SamplesModel newSample = new SamplesModel();
 
-    private async Task OnValidSubmit()
+    // Insert Sample
+    private async Task InsertSample()
     {
-        string sql = "INSERT INTO samples (OneLineText, MultipleLinesText, DropList, Checkbox, Radio) VALUES (@oneLineText, @multipleLinesText, @dropList, @checkbox, @radio);";
+
+        string sql = "INSERT INTO samples (oneLineText, multipleLinesText, dropList, checkbox, radio) VALUES (@oneLineText, @multipleLinesText, @dropList, @checkbox, @radio);";
         await _data.SaveData(sql, newSample, _config.GetConnectionString("MySqlConnection"));
         newSample = new SamplesModel();
     }

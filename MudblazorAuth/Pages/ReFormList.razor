@@ -7,60 +7,50 @@
 @inject IConfiguration _config
 @inject NavigationManager UriHelper
 
-<div class="container">
-    <section id="avail-appt-section">
+<div>
+    <MudText Typo="Typo.h3">Referral Form List</MudText>
 
-        <h3>Referral Form</h3>
-        @if (referral == null)
-        {
-            <p><em>Loading ...</em></p>
+        <input type="text" id="searchBox" name="searchBox"  @onchange="ShowNameSearched"/>
+
+    @if (referral == null)
+    {
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    }else
+    {
+        @foreach (var a in referral){
+            <MudText Typo="Typo.body1"><a href="@($"/refdetails/{@a.Id}")">@a.RefName</a></MudText>
         }
-
-        else
-        {
-            @foreach (var a in referral)
-            {
-                <p>
-                    <a href="@($"/refdetails/{@a.Id}")">@a.RefName</a>
-                </p>
-            }
-        }
-
-    </section>
+    }
 </div>
 
-
 @code {
-    void Navigate()
-    {
-        UriHelper.NavigateTo("samples");
-    }
 
     List<ReferralFormModel>? referral;
-    List<ReferralFormModel>? thisReferral;
 
-    private ReferralFormModel newReferral = new ReferralFormModel();
-
-    // booleans to determine what to display in the UI
-
-    bool createStatus = true;
-    bool editStatus = false;
-    bool deleteErrorMessage = false;
-
-    // error message for db delete exception
-
-    string dbErrorMessage = "";
-
-    // variable to keep track of the current appt being edited
-
-    int refBeingEdited;
+    object nameValue;
 
     // Load the data
-
-    protected override async Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
 
     {
         string sql = "SELECT * FROM referral";
         referral = await _data.LoadData<ReferralFormModel, dynamic>(sql, new { }, _config.GetConnectionString("MySQLConnection"));
+    }
+
+
+        private async Task ShowNameSearched(ChangeEventArgs args)
+    {
+        nameValue = args.Value;
+        string astr = nameValue.ToString();
+        string[] arr = astr.Split(' ');
+        if (arr.Count() > 1){
+            string sql = "SELECT * FROM referral WHERE RefName = @RefName;";
+            referral = await _data.LoadData<ReferralFormModel, dynamic>(sql, new { RefName = astr }, _config.GetConnectionString("MySQLConnection"));
+        }
+        else{
+            string sql = "SELECT * FROM referral WHERE RefName = @RefName;";
+            referral = await _data.LoadData<ReferralFormModel, dynamic>(sql, new { RefName = @nameValue }, _config.GetConnectionString("MySQLConnection"));
+        }
+        referral = referral.OrderBy(x => x.Id).ToList();
     }
 }

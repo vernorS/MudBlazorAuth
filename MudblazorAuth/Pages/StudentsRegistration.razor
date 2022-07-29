@@ -6,167 +6,93 @@
 @inject IConfiguration _config
 @inject NavigationManager UriHelper
 
-<MudExpansionPanels MultiExpansion="true">
-    <div class="container">
-        <MudExpansionPanel Text="Personal Details">
-            <section id="studentPersonalDetails">
-                <EditForm Model="@newDetails" OnValidSubmit="@OnValidSubmit">
-                    <DataAnnotationsValidator />
-                    <MudGrid>
-                        <MudItem xs="12" sm="12">
-                            <MudCard>
-                                <MudCardContent>
-                                    <MudTextField Label="PPS Number" HelperText="Max 8 hcaracters" @bind-Value="newDetails.PPSN" For="@(() => newDetails.PPSN)" />
-                                    <MudTextField Label="First Name" HelperText="Max. x characters" @bind-Value="newDetails.FirstName" For="@(() => newDetails.FirstName)" />
-                                    <MudTextField Label="Surname" HelperText="Max. x characters" @bind-Value="newDetails.Surname" For="@(() => newDetails.Surname)" />
-                                    <MudDatePicker Label="Date of Birth" HelperText="Max. 8 characters" @bind-Value="newDetails.DoB"/>                                   
-                                    <MudSelect T="string" Label="Gender" @bind-Value="newDetails.Gender"
-                                        For="@(() => newDetails.Gender)">
-                                        <MudSelectItem T="string" Value="@("Female")" />
-                                        <MudSelectItem T="string" Value="@("Male")" />
-                                        <MudSelectItem T="string" Value="@("Other")" />
-                                        <MudSelectItem T="string" Value="@("Decline")" />
-                                    </MudSelect>
-                                    <MudTextField Label="Address" HelperText=" " @bind-Value="newDetails.Address1" For="@(() => newDetails.Address1)" />
-                                    <MudTextField Label="Address" HelperText=" " @bind-Value="newDetails.Address2" For="@(() => newDetails.Address2)" />
-                                    <MudTextField Label="EirCode" HelperText=" " @bind-Value="newDetails.EirCode" For="@(() => newDetails.EirCode)" />
-                                    <MudTextField Label="City" HelperText=" " @bind-Value="newDetails.City" For="@(() => newDetails.City)" />
-                                    <MudTextField Label="Phone Number" HelperText=" " @bind-Value="newDetails.PhoneNumber" For="@(() => newDetails.PhoneNumber)" />
-                                    <MudTextField Label="Mobile Number" HelperText=" " @bind-Value="newDetails.MobileNumber" For="@(() => newDetails.MobileNumber)" />
-                                    <MudTextField Label="E-Mail" HelperText=" " @bind-Value="newDetails.EmailAddress" For="@(() => newDetails.EmailAddress)" />
 
-                                </MudCardContent>
-                                <MudCardActions>
-                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Submit</MudButton>
-                                </MudCardActions>
-                            </MudCard>
-                        </MudItem>
-                    </MudGrid>
-                </EditForm>
-            </section>
-        </MudExpansionPanel>
+<EditForm Model="@newStudent" OnValidSubmit="@SubmitPersonalDetails">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="5">
+            <MudCard>
+                <MudCardContent>
+                    @*personal_details Table*@
+                    <MudTextField Label="PPS Number" HelperText="Max 8 caracters" @bind-Value="newStudent.personalDetails.PPSN" For="@(() => newStudent.personalDetails.PPSN)" />
+                    <MudTextField Label="First Name" HelperText=" " @bind-Value="newStudent.personalDetails.FirstName" For="@(() => newStudent.personalDetails.FirstName)" />
+                    <MudTextField Label="Surname" HelperText=" " @bind-Value="newStudent.personalDetails.Surname" For="@(() => newStudent.personalDetails.Surname)" />
+                    <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Date of Birth" @bind-Date="newStudent.personalDetails.DoB" DateFormat="dd/MM/yyyy"/>
 
-        <MudExpansionPanel Text="Modules">
-            <section id="studentActivity">
-                <EditForm Model="@newStudent" OnValidSubmit="@OnValidSubmit2">
-                    <DataAnnotationsValidator />
-                    <MudGrid>
-                        <MudItem xs="12" sm="12">
-                            <MudCard>
-                                <MudCardContent>
+                    <MudSelect T="string" Label="Gender" @bind-Value="newStudent.personalDetails.Gender" For="@(() => newStudent.personalDetails.Gender)">
+                        <MudSelectItem Value="@("Female")" />
+                        <MudSelectItem Value="@("Male")" />
+                        <MudSelectItem Value="@("Other")" />
+                        <MudSelectItem Value="@("Refuse Answer")" />
+                    </MudSelect>
+                    <MudTextField Label="Address" HelperText=" " @bind-Value="newStudent.personalDetails.Address1" For="@(() => newStudent.personalDetails.Address1)" />
+                    <MudTextField Label="Address" HelperText=" " @bind-Value="newStudent.personalDetails.Address2" For="@(() => newStudent.personalDetails.Address2)" />
+                    <MudTextField Label="EirCode" HelperText=" " @bind-Value="newStudent.personalDetails.EirCode" For="@(() => newStudent.personalDetails.EirCode)" />
+                    <MudTextField Label="City" HelperText=" " @bind-Value="newStudent.personalDetails.City" For="@(() => newStudent.personalDetails.City)" />
+                    <MudTextField Label="Phone Number" HelperText=" " @bind-Value="newStudent.personalDetails.PhoneNumber" For="@(() => newStudent.personalDetails.PhoneNumber)" />
+                    <MudTextField Label="Mobile Number" HelperText=" " @bind-Value="newStudent.personalDetails.MobileNumber" For="@(() => newStudent.personalDetails.MobileNumber)" />
+                    <MudTextField Label="E-Mail" HelperText=" " @bind-Value="newStudent.personalDetails.EmailAddress" For="@(() => newStudent.personalDetails.EmailAddress)" />
+                    @*student Table*@
+                    <MudTextField Label="Education Level" HelperText=" " @bind-Value="newStudent.studentModel.EducationLevel" For="@(() => newStudent.studentModel.EducationLevel)" />
+                    <MudTextField Label="ReferralSource" HelperText=" " @bind-Value="newStudent.studentModel.ReferralSource" For="@(() => newStudent.studentModel.ReferralSource)" />
+                    <MudCheckBox Label="Interview" @bind-Value="@newStudent.studentModel.Interview" For="@(() => newStudent.studentModel.Interview)"></MudCheckBox>
+                    <MudCheckBox Label="Place Offered" @bind-Value="@newStudent.studentModel.PlaceOffered" For="@(() => newStudent.studentModel.PlaceOffered)"></MudCheckBox>
+                    <MudCheckBox Label="Place Acepted" @bind-Value="@newStudent.studentModel.PlaceAccepted" For="@(() => newStudent.studentModel.PlaceAccepted)"></MudCheckBox>
+                    <MudCheckBox Label="Registred With Ballymun Job Centre" @bind-CheValuecked="@newStudent.studentModel.RegistredWithBLJC" For="@(() => newStudent.studentModel.RegistredWithBLJC)"></MudCheckBox>
+                    <MudCheckBox Label="Guidance Officer" @bind-Value="@newStudent.studentModel.GuidanceOfficer" For="@(() => newStudent.studentModel.GuidanceOfficer)"></MudCheckBox>
+                    <MudCheckBox Label="Engaged With Other Agencies" @bind-Value="@newStudent.studentModel.EngagedWithOtherAgencies" For="@(() => newStudent.studentModel.EngagedWithOtherAgencies)"></MudCheckBox>
+                    <MudCheckBox Label="Responsabilities" @bind-Value="@newStudent.studentModel.Responsabilities" For="@(() => newStudent.studentModel.Responsabilities)"></MudCheckBox>
+                    <MudCheckBox Label="Photo Consent" @bind-Value="@newStudent.studentModel.PhotoConsent" For="@(() => newStudent.studentModel.PhotoConsent)"></MudCheckBox>
+                    <MudCheckBox Label="Data Consent" @bind-Value="@newStudent.studentModel.DataConsent" For="@(() => newStudent.studentModel.DataConsent)"></MudCheckBox>
+                    <MudCheckBox Label="Personal Property Consent" @bind-Value="@newStudent.studentModel.PersonalPropertyConsent" For="@(() => newStudent.studentModel.PersonalPropertyConsent)"></MudCheckBox>
+                    <MudCheckBox Label="StudFiciResnNotes" @bind-Value="@newStudent.studentModel.StudFiciResn" For="@(() => newStudent.studentModel.StudFiciResn)"></MudCheckBox>
+                    <MudTextField Label="Notes" HelperText=" " @bind-Value="newStudent.studentModel.Notes" For="@(() => newStudent.studentModel.Notes)" />
+                </MudCardContent>
 
-                                    <h3>Modules</h3>
-                                    <p>COMMUNITY GARDENING</p>
-                                    <p>HILL WALKING</p>
-                                    <p>COOKING</p>
-                                    <p>GYM/ TRACK TRAINING</p>
-                                    <p>MINI FOOTBALL LEAGUE</p>
-                                    <p>DSPCA RESPONSIBLE HORSE OWNERSHIP PROGRAMME</p>
-                                    <p>LEADERSHIP SKILLS</p>
-                                    <p>YOGA/ MINDFULNESS</p>
-                                    <p>PERSONAL DEVELOPMENT</p>
-                                    <p>CHOICE & CHALLENGE</p>
-                                    <p>ADDICTION AWARENESS</p>
-                                    <p>CAREER GUIDANCE</p>
-                                    <p>MUSIC SKILLS</p>
-                                    <p>CHARITY FUN RUN</p>
-                                    <p>OUTINGS</p>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Submit</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 
-                                    <p>CHAMPION OF CHAMPIONS</p>
-                                    <p>Archery</p>
-                                    <p>Basketball</p>
-                                    <p>Skipping</p>
-                                    <p>Indoor Football</p>
-                                    <p>Penalty Shots</p>
-                                    <p>Running Laps</p>
-
-                                </MudCardContent>
-                                <MudCardActions>
-                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Submit</MudButton>
-                                </MudCardActions>
-                            </MudCard>
-                        </MudItem>
-                    </MudGrid>
-                </EditForm>
-            </section>
-        </MudExpansionPanel>
-
-        <MudExpansionPanel Text="Ballyrunners Responsabilities">
-            <section id="studentResponsabilities">
-                <EditForm Model="@newStudent" OnValidSubmit="@OnValidSubmit2">
-                    <DataAnnotationsValidator />
-                    <MudGrid>
-                        <MudItem xs="12" sm="12">
-                            <MudCard>
-                                <MudCardContent>
-                                    <h3>BALLYRUNNERS’ RESPONSIBILITIES</h3>
-                                    <p>To attend</p>
-                                    <p>To treat people with respect</p>
-                                    <p>To turn up in a fit state i.e. not under the influence of alcohol or drugs (including hash/weed)</p>
-                                    <p>To have fun</p>
-                                    <p>To wear appropriate clothing & footwear i.e. gardening boots</p>
-                                    <p>To follow the instructions given by staff & tutors</p>
-                                    <MudCheckBox Label="I understand that these responsibilities are to ensure that everyone is kept safe & has an enjoyable experience." @bind-Checked="@newStudent.Responsibilities" For="@(() => @newStudent.Responsibilities)"></MudCheckBox>
-                                </MudCardContent>
-                                <MudCardActions>
-                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Submit</MudButton>
-                                </MudCardActions>
-                            </MudCard>
-                        </MudItem>
-                    </MudGrid>
-                </EditForm>
-            </section>
-        </MudExpansionPanel>
-
-        <MudExpansionPanel Text="Photo Consent">
-            <section id="studentPhotoConsent">
-                <EditForm Model="@newStudent" OnValidSubmit="@OnValidSubmit2">
-                    <DataAnnotationsValidator />
-                    <MudGrid>
-                        <MudItem xs="12" sm="12">
-                            <MudCard>
-                                <MudCardContent>
-                                    <h3>BALLYRUNNERS PHOTO CONSENT</h3>
-                                    <p>
-                                        I give my permission that any photographs/ videos taken of me during Ballyrunners Course
-                                        may be published in newspapers, social media, promotional material, annual reports and
-                                        websites connected with The Ballymun Job Centre and the funders of the course.
-                                    </p>
-
-                                    <MudCheckBox Label="Agree" @bind-Checked="@newStudent.PhotoConsent" unchecked For="@(() => @newStudent.PhotoConsent)"></MudCheckBox>
-                                </MudCardContent>
-                                <MudCardActions>
-                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Submit</MudButton>
-                                </MudCardActions>
-                            </MudCard>
-                        </MudItem>
-                    </MudGrid>
-                </EditForm>
-            </section>
-        </MudExpansionPanel>
-    </div>
-</MudExpansionPanels>
 
 
 @code {
-    private PermissionsModel newStudent = new PermissionsModel();
-    private PersonalDetailsModel newDetails = new PersonalDetailsModel();
+    //private StudentModel newStudent = new StudentModel();
+    //private PersonalDetailsModel personalDetailsModel = new PersonalDetailsModel();
 
-    private async Task OnValidSubmit()
+    private StudentDetailsModel newStudent = new StudentDetailsModel();
+    //StudentModel student = new StudentModel();
+
+    bool studentActivity = true;
+    bool studentPhotoConsent = true;
+
+
+    private async Task SubmitPersonalDetails()
     {
-        string sql = "INSERT INTO personal_details (PPSN, FirstName, Surname, DoB, Gender, Address1, Address2, EirCode, City, PhoneNumber, MobileNumber, EmailAddress)" +
-        "VALUES (@PPSN, @FirstName, @Surname, @DoB, @Gender, @Address1, @Address2, @EirCode, @City, @PhoneNumber, @MobileNumber, @EmailAddress);";
-        await _data.SaveData(sql, newDetails, _config.GetConnectionString("MySqlConnection"));
-        newDetails = new PersonalDetailsModel();
-    }
 
-        private async Task OnValidSubmit2()
-    {
-        string sql = "INSERT INTO permissions (DetailsId, PhotoConsent, Responsibilities)" +
-                "VALUES (LAST_INSERT_ID(), @PhotoConsent, @Responsibilities);";
-        await _data.SaveData(sql, newStudent, _config.GetConnectionString("MySqlConnection"));
-        newStudent = new PermissionsModel();
-    }
+        string sqlInsertPersonalDetails = "INSERT INTO personal_details (PPSN, FirstName, Surname, DoB, Gender, Address1, Address2, EirCode, City, PhoneNumber, MobileNumber, EmailAddress)" +
+            "VALUES (@PPSN, @FirstName, @Surname, @DoB, @Gender, @Address1, @Address2, @EirCode, @City, @PhoneNumber, @MobileNumber, @EmailAddress);";
 
+        var personalDetailsId = await _data.CreateRecordReturnID(sqlInsertPersonalDetails, newStudent.personalDetails, _config.GetConnectionString("MySqlConnection"));
+        Console.WriteLine(personalDetailsId);
+        newStudent.studentModel.DetailsId = personalDetailsId;
+
+        string sqlInsertStudent = "INSERT INTO student (DetailsId, EducationLevel, ReferralSource, Interview, PlaceOffered," +
+               "PlaceAccepted, RegistredWithBLJC, GuidanceOfficer, EngagedWithOtherAgencies, Responsabilities," +
+               "PhotoConsent, DataConsent, PersonalPropertyConsent, StudFiciResn, Notes)" +
+
+               "VALUES (@DetailsId, @EducationLevel, @ReferralSource,@Interview, @PlaceOffered,@PlaceAccepted," +
+               "@RegistredWithBLJC,@GuidanceOfficer, @EngagedWithOtherAgencies,@Responsabilities, @PhotoConsent," +
+               "@DataConsent,@PersonalPropertyConsent, @StudFiciResn,@Notes);";
+
+        await _data.SaveData(sqlInsertStudent, newStudent.studentModel, _config.GetConnectionString("MySqlConnection"));
+
+        // now make a call to create your second record since the details id has been set for the foreign key
+        // await SubmitStudent(personalDetailsId, newStudent.studentModel);
+        newStudent = new StudentDetailsModel();
+        //newDetails = new PersonalDetailsModel();
+    }
 }
-
